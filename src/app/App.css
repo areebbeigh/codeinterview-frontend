@@ -6,17 +6,18 @@ body {
   background-color: #151515;
 }
 
-.wrapper {
-  color: #c5c5c5;
-  min-height: 100%;
+.placeholder-container {
+  width: 250px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  text-align: center;
+  color: white !important;
+}
 
-  .welcome-card {
-    background: rgb(0,0,0,0);
-    width: 70%;
-    border: none;
-  }
-
-  .demo-image {
-    width: 900px;
-  }
+#placeholder-img {
+  width: 100%;
+  padding: 2px;
 }

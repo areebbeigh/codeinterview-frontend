@@ -1,0 +1,25 @@
+.wrapper {
+  color: #c5c5c5;
+  min-height: 100%;
+
+  .welcome-card {
+    background: rgb(0, 0, 0, 0);
+    width: 70%;
+    border: none;
+  }
+
+  .demo-image {
+    width: 900px;
+    box-shadow: 5px 6px 5px #0000002b;
+    margin-bottom: 50px;
+  }
+}
+
+a {
+  color: white;
+}
+
+a:hover {
+  text-decoration: none;
+  color: white;
+}

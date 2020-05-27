@@ -1,29 +1,30 @@
 import 'regenerator-runtime/runtime';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
+  withRouter,
 } from 'react-router-dom';
 
 import Room from 'pages/room/room';
+import Home from 'pages/home/home';
 import * as serviceWorker from './service-worker';
 import App from './app/App';
-import store from './app/store';
 
+import 'react-toastify/dist/ReactToastify.min.css';
 import 'overlayscrollbars/css/OverlayScrollbars.css';
 import './index.css';
 
 ReactDOM.render(
   <Router>
-    <Provider store={store}>
+    <App>
       <Switch>
         <Route path="/room/:roomId" component={Room} />
-        <Route path="/" component={App} />
+        <Route path="/" component={Home} />
       </Switch>
-    </Provider>
+    </App>
   </Router>,
   document.getElementById('root')
 );
