@@ -1,10 +1,10 @@
-let baseURL = 'codeinterview-backend.herokuapp.com';
+let baseURL = 'ci-backend-staging.herokuapp.com';
 let httpPrefix = 'https://';
 let wsPrefix = 'wss://';
 if (process.env.NODE_ENV === 'development') {
   baseURL = 'localhost:8000';
-  httpPrefix = 'http://'
-  wsPrefix = 'ws://'
+  httpPrefix = 'http://';
+  wsPrefix = 'ws://';
 }
 
 export default {

@@ -7,6 +7,7 @@ import { Row, Col } from 'react-bootstrap';
 import MonacoEditor from 'react-monaco-editor';
 import { MonacoBinding } from 'y-monaco';
 import EditorDropdown from 'components/editor-dropdown/editor-dropdown';
+import { toast } from 'react-toastify';
 
 import LANG_CONFIG from 'constants/languages';
 import langService from 'api/http/lang-service';
@@ -53,6 +54,10 @@ class SharedMonacoEditor extends React.Component {
       .then(languages => {
         this.languages = languages;
       })
+      .catch(err => {
+        console.error(err);
+        toast.error(`Could not load server language data. ${err.message}`);
+      })
       .finally(() => {
         const {
           language,
@@ -71,13 +76,20 @@ class SharedMonacoEditor extends React.Component {
     const { language, loadTemplate } = this.state;
     const { data } = this;
     const { model } = data.code;
-    if (prevState.language !== language && loadTemplate) {
+    const langCode = LANG_CONFIG[language];
+    if (
+      prevState.language !== language &&
+      loadTemplate &&
+      this.languages &&
+      langCode in this.languages
+    ) {
       model.pushEditOperations(
         [],
         [
           {
             range: model.getFullModelRange(),
-            text: this.languages[LANG_CONFIG[language]].template,
+            text:
+              this.languages[LANG_CONFIG[language]]?.template || '',
             forceMoveMarkers: true,
           },
         ],
@@ -169,7 +181,8 @@ class SharedMonacoEditor extends React.Component {
 
     return (
       <div className={className}>
-        {!language && (
+        {/* show loading screen till we get language data */}
+        {language === 'none' && (
           <div className="loading-screen">
             <div className="loading-content">
               <img

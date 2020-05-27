@@ -4,6 +4,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import Dialog from 'react-bootstrap-dialog';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
+import { toast } from 'react-toastify';
 import {
   faCircle,
   faMicrophone,
@@ -29,6 +30,12 @@ function isMicOn() {
 
 function isCamOn() {
   return window?.sync.streamData?.video?.enabled;
+}
+
+function displayWelcomeToast(name) {
+  toast.dark(
+    `Welcome to CodeInterview, ${name}! Share this room's URL to let others join in.`
+  );
 }
 
 class Room extends React.Component {
@@ -64,9 +71,9 @@ class Room extends React.Component {
         alone: room.data.participants === 0,
       });
     } catch (err) {
-      console.warn('error fetching room details', err);
-      alert(
-        `There was an error joininng the room. Are you sure it exists?`
+      toast.error(
+        `Could not fetch room data. Are you sure this room exists? [${err.message}]`,
+        { autoClose: false }
       );
     }
   }
@@ -84,16 +91,17 @@ class Room extends React.Component {
         }),
         actions: [
           Dialog.OKAction(dialog => {
-            const result = dialog.value;
+            const username = dialog.value;
             const userProfile = {
-              username: result,
+              username,
               color: colors.userColors[0],
             };
             this.setState({
-              username: result,
+              username,
               profile: userProfile,
               profiles: [...profiles, userProfile],
             });
+            displayWelcomeToast(username);
           }),
         ],
         // prevents dialog from closing on clicking outside
@@ -106,7 +114,7 @@ class Room extends React.Component {
       this.roomSocket = roomSocket(roomId, username);
       this.bindSocketListeners();
       // webrtc
-      window.sync = setupSync({ room: roomId });
+      window.sync = setupSync(roomId);
       window.sync.setProfile(profile);
       this.bindConnListeners();
       // eslint-disable-next-line react/no-did-update-set-state

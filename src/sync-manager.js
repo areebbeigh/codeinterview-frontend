@@ -8,14 +8,17 @@ class SyncManager extends Emitter {
 
   profiles = {};
 
-  constructor({ room }) {
+  constructor(roomId) {
     super();
     this.doc = new Y.Doc();
     const webrtcProvider = new WebrtcProvider(
-      `yaide-${room}`,
+      `codeinterview-${roomId}`,
       this.doc,
       {
-        filterBcConns: true,
+        // don't use broadcast connections between browser windows.
+        // https://github.com/yjs/y-webrtc/issues/10
+        filterBcConns: false,
+        maxConns: Number.POSITIVE_INFINITY,
       }
     );
     this.webrtcProvider = webrtcProvider;
@@ -206,8 +209,8 @@ class SyncManager extends Emitter {
   }
 }
 
-export function setupSync(room) {
-  return new SyncManager({ room });
+export function setupSync(roomId) {
+  return new SyncManager(roomId);
 }
 
 export default SyncManager;
