@@ -1,0 +1,32 @@
+@import 'themes/css/codesandbox-black.css';
+
+.room-container {
+  background-color: $primary-color;
+  white-space: nowrap;
+}
+
+.editor-col {
+  padding: 0 !important;
+}
+
+.code-editor {
+  height: calc(100vh - $control-bar-height);
+}
+
+.input-editor, .output-terminal {
+  height: calc(100vh - $control-bar-height);
+}
+
+.control-bar {
+  height: $control-bar-height;
+
+  .media-controls {
+    display: inline;
+    color: #ffffff9c;
+
+    .icon {
+      width: 25px;
+    }
+  }
+}
+

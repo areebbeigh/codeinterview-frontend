@@ -1,0 +1,86 @@
+$window-height: 100vh;
+$window-width: 70vw;
+$title-bar-height: 30px;
+
+.video-chat-window {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* max-width: $window-width; */
+  max-height: $window-height;
+  background: rgb(0, 0, 0, 1);
+  border-top-right-radius: 0.4em;
+  border-top-left-radius: 0.4em;
+  z-index: 1;
+  overflow: hidden;
+
+  .title-bar {
+    height: $title-bar-height;
+    max-height: $title-bar-height;
+    background: #0c0c0c;
+
+    svg {
+      height: $title-bar-height;
+      padding: 7px;
+    }
+
+    svg:hover {
+      cursor: pointer;
+    }
+  }
+
+  .video-chat-container {
+    video {
+      background: #000;
+    }
+
+    .os-content-glue {
+      max-height: calc($window-height - $title-bar-height);
+    }
+
+    .focus-stream-row {
+      max-height: 50vh;
+
+      .focus-stream {
+        max-height: 50vh;
+      }
+    }
+
+    .peer-stream {
+      max-height: 18vh;
+      width: auto !important;
+    }
+  }
+}
+
+$compressed-window-height: 360px;
+$compressed-window-width: 250px;
+
+.video-chat-window.compressed {
+  max-height: $compressed-window-height;
+  max-width: $compressed-window-width;
+  left: 100%;
+  top: 100%;
+  transform: translate(-110%, calc(-100% - $control-bar-height));
+
+  .video-chat-container {
+    .os-host,
+    .os-content-glue {
+      max-height: calc($compressed-window-height - $title-bar-height);
+      max-width: $compressed-window-width;
+    }
+  }
+}
+
+.video-chat-window.compressed.minimized {
+  transform: translate(-110%, calc(-100% - $control-bar-height));
+
+  .video-chat-container {
+    .os-host,
+    .os-content-glue {
+      max-height: 0px;
+      height: 0px !important;
+    }
+  }
+}
