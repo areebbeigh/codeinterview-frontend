@@ -1,0 +1,22 @@
+.btn:focus {
+  box-shadow: none !important;
+}
+
+body {
+  background-color: #151515;
+}
+
+.wrapper {
+  color: #c5c5c5;
+  min-height: 100%;
+
+  .welcome-card {
+    background: rgb(0,0,0,0);
+    width: 70%;
+    border: none;
+  }
+
+  .demo-image {
+    width: 900px;
+  }
+}

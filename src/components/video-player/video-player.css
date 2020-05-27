@@ -1,0 +1,26 @@
+.video-container {
+    position: relative;
+    text-align: center;
+
+    .controls {
+        display: inline-block;
+        position: absolute;
+        left: 50%;
+        bottom: 10px;
+        transform: translate(-50%);
+        background: rgb(0,0,0,0.3);
+        color: white;
+
+        .icon {
+            vertical-align: middle;
+            font-size: 20px;
+            width: 30px;
+        }
+    }
+}
+
+/* .video-container:hover {
+    .controls {
+        display: inline-block;
+    }
+} */

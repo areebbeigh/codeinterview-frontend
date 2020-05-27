@@ -1,0 +1,73 @@
+@import 'themes/css/codesandbox-black.css';
+
+$terminal-input-height: 35px;
+
+.terminal-container {
+  height: 100%;
+
+  .terminal-header {
+    height: $titlebar-height;
+    background-color: $primary-color;
+    position: relative;
+    margin: 0;
+
+    .tab-area {
+      position: absolute;
+      bottom: 0;
+      z-index: 1;
+      .tab {
+        /* border: 1px solid rgb(0,0,0,0.3); */
+        height: 25px;
+        line-height: 25px;
+        box-sizing: border-box;
+        color: #565656;
+        padding: 0 8px;
+        border: 1px solid #343a40;
+        border-left: none;
+        cursor: pointer;
+        float: left;
+      }
+      .active {
+        color: #999 !important;
+        border-bottom: 0;
+      }
+    }
+  }
+
+  .xterm-container {
+    height: calc(100% - $titlebar-height - $terminal-input-height);
+    .xterm {
+      .xterm-viewport {
+        overflow: hidden;
+      }
+      .xterm-screen {
+        padding: 15px;
+        overflow: hidden;
+      }
+      .xterm-cursor {
+        display: none;
+      }
+      .xterm-rows {
+        div {
+          max-width: 100% !important;
+          /* height: fit-content !important; */
+          white-space: initial;
+        }
+      }
+    }
+  }
+
+  .terminal-input {
+    height: $terminal-input-height;
+    margin: 0 2.5%;
+    background: rgb(0,0,0,0.2);
+    color: white;
+    border: none;
+    resize: none;
+    width: 95%;
+    padding: 2px 10px;
+  }
+  .terminal-input:focus {
+    outline: none;
+  }
+}

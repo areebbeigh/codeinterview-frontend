@@ -1,0 +1,6 @@
+@import 'themes/css/codesandbox-black.css';
+
+.control-bar-container, .control-bar-container .row {
+  height: 100%;
+  background-color: $primary-color;
+}

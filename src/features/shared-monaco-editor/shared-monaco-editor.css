@@ -1,0 +1,81 @@
+@import 'themes/css/codesandbox-black.css';
+
+.loading-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: $primary-color;
+  color: white;
+  z-index: 2;
+  opacity: 0.95;
+
+  .loading-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+
+    img {
+      width: 150px;
+      height: 150px;
+    }
+  }
+}
+
+.shared-editor-container {
+  /* border: 2px solid #cccccc; */
+  height: 100%;
+}
+
+.shared-editor-header {
+  height: $titlebar-height;
+  background-color: $primary-color;
+  max-width: 100%;
+  margin: 0 !important;
+  position: relative;
+
+  .dropdown-menu {
+    height: auto;
+    max-height: 200px;
+  }
+
+  .tab-area {
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+    .tab {
+      /* border: 1px solid rgb(0,0,0,0.3); */
+      height: 25px;
+      line-height: 25px;
+      box-sizing: border-box;
+      color: #565656;
+      padding: 0 8px;
+      border: 1px solid #343a40;
+      border-left: none;
+      cursor: pointer;
+      float: left;
+    }
+    .active {
+      color: #999 !important;
+      border-bottom: 0;
+    }
+  }
+}
+
+.shared-editor-header h5 {
+  margin: 0;
+}
+
+.shared-editor-container {
+  .react-monaco-editor-container {
+    height: calc(100% - $titlebar-height);
+  }
+}
+
+.dropdown-menu {
+  height: 200px;
+  overflow-y: auto;
+}
