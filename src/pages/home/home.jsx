@@ -1,6 +1,8 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 import React from 'react';
 import { Container, Row, Button, Card } from 'react-bootstrap';
+import { MobileOnlyView } from 'react-device-detect';
+import Dialog from 'react-bootstrap-dialog';
 import getRoomService from 'api/http/room-service';
 import { toast } from 'react-toastify';
 
@@ -78,6 +80,15 @@ const Home = () => {
           Try It Out!
         </Button>
       </Row>
+      <MobileOnlyView>
+        <Dialog
+          ref={dialog => {
+            dialog.showAlert(
+              `Hey. CodeInterview works best on desktops. Head on to your desktop browser, I'll wait :)`
+            );
+          }}
+        />
+      </MobileOnlyView>
     </Container>
   );
 };
