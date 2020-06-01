@@ -1,45 +1,13 @@
-# advanced-react-webpack-babel-setup
+# codeinterview-frontend
 
-[![Build Status](https://travis-ci.org/rwieruch/advanced-react-webpack-babel-setup.svg?branch=master)](https://travis-ci.org/rwieruch/advanced-react-webpack-babel-setup) [![Slack](https://slack-the-road-to-learn-react.wieruch.com/badge.svg)](https://slack-the-road-to-learn-react.wieruch.com/) [![Greenkeeper badge](https://badges.greenkeeper.io/rwieruch/advanced-react-webpack-babel-setup.svg)](https://greenkeeper.io/)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/areebbeigh/codeinterview-frontend/master/src/assets/images/demo.png?token=ADURWHBSJK3G6CC27WZXHNS63WQ6A" width="85%" />
+</p>
 
-Advanced React with Webpack Setup. How to set it up yourself:
+This is the front-end for [codeinterview](https://github.com/areebbeigh/codeinterview-backend) in ReactJS.
 
-- [Minimal React + Webpack Setup](https://www.robinwieruch.de/minimal-react-webpack-babel-setup/)
-- [Advanced Webpack Setup](https://www.robinwieruch.de/webpack-advanced-setup-tutorial/)
-- [ESLint](https://www.robinwieruch.de/webpack-eslint/) + [ESLint + React](https://www.robinwieruch.de/react-eslint-webpack-babel/) + [Prettier + ESLint](https://www.robinwieruch.de/prettier-eslint/)
+## What I'm using
 
-[![Edit advanced-react-webpack-babel-setup](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/github/rwieruch/advanced-react-webpack-babel-setup/tree/master/?fontsize=14)
-
-## Features
-
-* React 16
-* Webpack 4
-* Babel 7
-* Hot Module Replacement
-* Dev + Production Builds
-* Dist Folder Managagement by Webpack
-* Common and environment specific Webpack Configuration
-* Composition of Webpack Configuration
-* Source Maps
-* Environment Variables
-* Webpack Add-Ons
-* ESLint + Prettier
-
-## DIY Add-Ons
-
-* [SVG Icons](https://www.robinwieruch.de/react-svg-icon-components/)
-* [CSS Modules](https://www.robinwieruch.de/react-css-modules/)
-* [Fonts Support](https://www.robinwieruch.de/webpack-font/)
-* [Images Support](https://www.robinwieruch.de/webpack-images/)
-
-## Alternatives
-
-* [Minimal React Webpack Babel Setup](https://github.com/rwieruch/minimal-react-webpack-babel-setup)
-
-## Installation
-
-- `git clone git@github.com:rwieruch/advanced-react-webpack-babel-setup.git`
-- cd advanced-react-webpack-babel-setup
-- npm install
-- npm start
-- visit `http://localhost:8080/`
+- The editor is implemented using [react-monaco-editor](https://github.com/react-monaco-editor/react-monaco-editor).
+-  [y-webrtc](https://github.com/yjs/y-webrtc) adds p2p collaborative editing capabilities using [CDRTs](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type).
+- [x-termjs](https://github.com/xtermjs/xterm.js) for the terminal.
