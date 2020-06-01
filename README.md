@@ -9,5 +9,5 @@ This is the front-end for [codeinterview](https://github.com/areebbeigh/codeinte
 ## What I'm using
 
 - The editor is implemented using [react-monaco-editor](https://github.com/react-monaco-editor/react-monaco-editor).
--  [y-webrtc](https://github.com/yjs/y-webrtc) adds p2p collaborative editing capabilities using the CDRT algorithm.
+-  [y-webrtc](https://github.com/yjs/y-webrtc) adds p2p collaborative editing capabilities using [CDRTs](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type).
 - [x-termjs](https://github.com/xtermjs/xterm.js) for the terminal.
