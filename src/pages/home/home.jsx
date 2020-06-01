@@ -83,9 +83,11 @@ const Home = () => {
       <MobileOnlyView>
         <Dialog
           ref={dialog => {
-            dialog.showAlert(
-              `Hey. CodeInterview works best on desktops. Head on to your desktop browser, I'll wait :)`
-            );
+            dialog.show({
+              body: `Hey. CodeInterview works best on desktops. Head on to your desktop browser. I'll wait :)`,
+              actions: [Dialog.OKAction()],
+              onHide: () => null,
+            });
           }}
         />
       </MobileOnlyView>
