@@ -13,6 +13,10 @@
     box-shadow: 5px 6px 5px #0000002b;
     margin-bottom: 50px;
   }
+
+  .btn {
+    width: 250px;
+  }
 }
 
 a {

@@ -3,6 +3,8 @@ import React from 'react';
 import { Container, Row, Button, Card } from 'react-bootstrap';
 import { MobileOnlyView } from 'react-device-detect';
 import Dialog from 'react-bootstrap-dialog';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import getRoomService from 'api/http/room-service';
 import { toast } from 'react-toastify';
 
@@ -56,9 +58,10 @@ const Home = () => {
         />
 
         <Button
-          className="align-self-center"
+          className="align-self-center mb-4 p-2"
           size="sm"
           variant="primary"
+          href="#"
           onClick={() => {
             if (clicked) return;
             clicked = true;
@@ -78,6 +81,15 @@ const Home = () => {
           }}
         >
           Try It Out!
+        </Button>
+        <Button
+          className="align-self-center p-2"
+          size="sm"
+          variant="light"
+          href="https://donorbox.org/donate-to-codeinterview?default_interval=o"
+          target="_blank"
+        >
+          <FontAwesomeIcon icon={faHeart} /> Donate
         </Button>
       </Row>
       <MobileOnlyView>
