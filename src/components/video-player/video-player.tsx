@@ -36,9 +36,7 @@ function Player({
   name,
 }: Props): React.ReactElement {
   const [isMuted, setMuted] = useState<Boolean>(false);
-  const videoRef: React.RefObject<
-    HTMLVideoElement
-  > = React.createRef();
+  const videoRef: React.RefObject<HTMLVideoElement> = React.createRef();
 
   useEffect(() => {
     if (videoRef.current)

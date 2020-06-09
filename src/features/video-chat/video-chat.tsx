@@ -13,7 +13,7 @@ import Player from 'components/video-player/video-player';
 
 import './video-chat.css';
 
-function getName(peerId) {
+function getName(peerId: string): string {
   const { sync } = window;
   if (peerId in sync.profiles) {
     return sync.profiles[peerId].username;
@@ -21,20 +21,22 @@ function getName(peerId) {
   return '';
 }
 
-const VideoChat = () => {
-  const [myPeerId, setMyPeerId] = useState(
+function VideoChat(): React.ReactElement {
+  const [myPeerId, setMyPeerId] = useState<string>(
     window.sync?.peerId || null
   );
-  const [streams, setStreams] = useState(window.sync?.streams || {});
-  const [localStream, setLocalStream] = useState(null);
-  const [focusStream, setFocusStream] = useState(null);
-  const [focusId, setFocusId] = useState(null);
-  const [uiCompressed, setUiCompressed] = useState(false);
-  const [uiMinimized, setUiMinimized] = useState(false);
+  const [streams, setStreams] = useState<{
+    [peerId: string]: MediaStream;
+  }>(window.sync?.streams || {});
+  const [localStream, setLocalStream] = useState<MediaStream>(null!);
+  const [focusStream, setFocusStream] = useState<MediaStream>(null!);
+  const [focusId, setFocusId] = useState<string>();
+  const [uiCompressed, setUiCompressed] = useState<boolean>(false);
+  const [uiMinimized, setUiMinimized] = useState<boolean>(false);
 
   // Media stream helper
 
-  const getMediaStream = () => {
+  function getMediaStream(): void {
     window.sync
       .getUserMedia()
       .then(stream => {
@@ -42,31 +44,46 @@ const VideoChat = () => {
         setLocalStream(new MediaStream(stream.getVideoTracks()));
       })
       .catch(console.warn);
-  };
+  }
 
   // Sync listeners
 
-  const addStream = ({ peerId, stream }) => {
+  function addStream({
+    peerId,
+    stream,
+  }: {
+    peerId: string;
+    stream: MediaStream;
+  }): void {
     setStreams({
       ...streams,
       [peerId]: stream,
     });
-  };
+  }
 
-  const updatePeers = () => {
+  function updatePeers(): void {
     setStreams(window.sync.streams);
-  };
+  }
 
   useEffect(() => {
     const { sync } = window;
     // sync object event listeners
     sync.on('ready', updatePeers);
     sync.on('peers', updatePeers);
-    sync.on('stream', ({ peerId, stream }) => {
-      addStream({ peerId, stream });
-      setFocusStream(stream);
-      setFocusId(peerId);
-    });
+    sync.on(
+      'stream',
+      ({
+        peerId,
+        stream,
+      }: {
+        peerId: string;
+        stream: MediaStream;
+      }) => {
+        addStream({ peerId, stream });
+        setFocusStream(stream);
+        setFocusId(peerId);
+      }
+    );
     sync.on('peerId', setMyPeerId);
     // get user media
     getMediaStream();
@@ -125,15 +142,16 @@ const VideoChat = () => {
                   ? false
                   : focusStream !== localStream
               }
+              width=""
               stream={focusStream || localStream}
-              name={getName(focusId)}
+              name={focusId ? getName(focusId) : 'player'}
             />
           </Row>
           <Row
             className="peer-stream-row d-flex justify-content-center"
             noGutters
           >
-            {Object.keys(streams).map(id => {
+            {Object.keys(streams).map((id: string) => {
               if (
                 focusStream === streams[id] ||
                 (!focusStream && streams[id] === localStream)
@@ -159,6 +177,6 @@ const VideoChat = () => {
       </div>
     </div>
   );
-};
+}
 
 export default VideoChat;
