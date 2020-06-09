@@ -3,12 +3,54 @@ import * as Y from 'yjs';
 
 import Emitter from 'lib/emitter';
 
-class SyncManager extends Emitter {
-  streams = {};
+interface ISyncManager {
+  streams: { [peerId: string]: MediaStream };
+  streamData: {
+    video: MediaStreamTrack;
+    audio: MediaStreamTrack;
+  };
+  stream: MediaStream;
+  peerId: string;
+  profiles: { [peerId: string]: Profile };
+  profile: Profile;
+  doc: Y.Doc;
+  webrtcProvider: typeof WebrtcProvider;
+  checkPeerId(): void;
+  getWebrtcConns(): any[];
+  getPeers(): any[];
+  getPeerById(peerId: string): any;
+  getPeerIds(): string[];
+  getStream(peerId: string): MediaStream | null;
+  getUserMedia(): Promise<MediaStream>;
+  getWebrtcConns(): any[];
+  releaseUserMedia(): void;
+  setProfile(profile: Profile): void;
+  setStream(stream: MediaStream): void;
+  toggleLocalAudio(): void;
+  toggleLocalVideo(): void;
+}
 
-  profiles = {};
+class SyncManager extends Emitter implements ISyncManager {
+  streams: { [peerId: string]: MediaStream } = {};
 
-  constructor(roomId) {
+  streamData: {
+    video: MediaStreamTrack;
+    audio: MediaStreamTrack;
+  };
+
+  stream: MediaStream;
+
+  peerId: string;
+
+  profiles: { [peerId: string]: Profile } = {};
+
+  profile: Profile;
+
+  doc: Y.Doc;
+
+  webrtcProvider: typeof WebrtcProvider;
+
+  constructor(roomId: string) {
     super();
     this.doc = new Y.Doc();
     const webrtcProvider = new WebrtcProvider(
@@ -23,29 +65,32 @@ class SyncManager extends Emitter {
     );
     this.webrtcProvider = webrtcProvider;
 
-    webrtcProvider.on('peers', info => {
+    webrtcProvider.on('peers', (info: any) => {
       console.log(info);
       const added = Array.from(info.added);
       const removed = Array.from(info.removed);
 
-      removed.forEach(peerId => {
+      removed.forEach((peerId: string) => {
         delete this.profiles[peerId];
         this.emit('profiles', this.profiles);
         delete this.streams[peerId];
       });
 
-      added.forEach(peerId => {
+      added.forEach((peerId: string) => {
         const peerConn = this.getPeerById(peerId);
         if (peerConn) {
           // exchange user profile data
-          peerConn.peer.on('data', data => {
-            let dataJson = null;
+          peerConn.peer.on('data', (data: any) => {
+            let dataJson: any;
             try {
               dataJson = JSON.parse(data.toString());
             } catch (err) {
               return;
             }
-            const { type, profileData } = dataJson;
+            const {
+              type,
+              profileData,
+            }: { type: string; profileData: Profile } = dataJson;
             if (type === 'profile-data') {
               this.profiles[peerId] = {
                 ...profileData,
@@ -68,7 +113,7 @@ class SyncManager extends Emitter {
             peerConn.peer.addStream(this.stream);
           }
           // receive peer streams
-          peerConn.peer.on('stream', stream => {
+          peerConn.peer.on('stream', (stream: MediaStream) => {
             console.log('got peer stream', peerId, stream);
             this.streams[peerId] = stream;
             this.emit('stream', { peerId, stream });
@@ -83,7 +128,7 @@ class SyncManager extends Emitter {
       });
 
       this.checkPeerId();
-      this.emit('peers');
+      this.emit('peers', {});
     });
 
     webrtcProvider.on('synced', info => {
@@ -93,7 +138,7 @@ class SyncManager extends Emitter {
     });
   }
 
-  checkPeerId() {
+  checkPeerId(): void {
     if (!this.peerId) {
       this.peerId = this.webrtcProvider.room.peerId;
       if (this.peerId) {
@@ -102,19 +147,19 @@ class SyncManager extends Emitter {
     }
   }
 
-  getWebrtcConns() {
+  getWebrtcConns(): any {
     return this.webrtcProvider?.room?.webrtcConns;
   }
 
-  getPeers() {
+  getPeers(): any[] {
     return Array.from(this.getWebrtcConns()?.values() || []);
   }
 
-  getPeerById(id) {
+  getPeerById(id: string): any {
     return this.getWebrtcConns()?.get(id) || null;
   }
 
-  getPeerIds() {
+  getPeerIds(): string[] {
     try {
       return Array.from(this.getWebrtcConns()?.keys() || []);
     } catch (err) {
@@ -123,7 +168,7 @@ class SyncManager extends Emitter {
     return [];
   }
 
-  getStream(peerId) {
+  getStream(peerId: string): MediaStream | null {
     try {
       return this.streams[peerId];
     } catch (err) {
@@ -132,54 +177,56 @@ class SyncManager extends Emitter {
     return null;
   }
 
-  getUserMedia() {
-    return new Promise((resolve, reject) => {
-      const options = {
-        audio: true,
-        video: {
-          facingMode: 'user',
+  getUserMedia(): Promise<MediaStream> {
+    return new Promise(
+      (resolve: (stream: MediaStream) => void, reject) => {
+        const options = {
+          audio: true,
           video: {
+            facingMode: 'user',
+            video: {
+              width: { ideal: 640 },
+              height: { ideal: 360 },
+            },
             width: { ideal: 640 },
             height: { ideal: 360 },
+            frameRate: {
+              min: 1,
+              ideal: 15,
+            },
           },
-          width: { ideal: 640 },
-          height: { ideal: 360 },
-          frameRate: {
-            min: 1,
-            ideal: 15,
-          },
-        },
-      };
-      try {
-        navigator.mediaDevices
-          .getUserMedia(options)
-          .then(resolve)
-          .catch(reject);
-      } catch (err) {
-        reject(err);
+        };
+        try {
+          navigator.mediaDevices
+            .getUserMedia(options)
+            .then(resolve)
+            .catch(reject);
+        } catch (err) {
+          reject(err);
+        }
       }
-    }).then(stream => {
+    ).then(stream => {
       this.setStream(stream);
       return stream;
     });
   }
 
-  releaseUserMedia() {
+  releaseUserMedia(): void {
     this.stream.getTracks().map(track => track.stop());
-    this.stream = null;
+    this.stream = null!;
   }
 
-  toggleLocalAudio() {
+  toggleLocalAudio(): void {
     const { audio } = this.streamData;
     audio.enabled = !audio.enabled;
   }
 
-  toggleLocalVideo() {
+  toggleLocalVideo(): void {
     const { video } = this.streamData;
     video.enabled = !video.enabled;
   }
 
-  setStream(stream) {
+  setStream(stream: MediaStream): void {
     this.stream = stream;
     this.streamData = {
       audio: stream.getAudioTracks()[0],
@@ -191,7 +238,7 @@ class SyncManager extends Emitter {
     });
   }
 
-  setProfile(profile) {
+  setProfile(profile: Profile): void {
     this.profile = profile;
     this.on('peerId', peerId => {
       this.profiles[peerId] = profile;
@@ -209,7 +256,7 @@ class SyncManager extends Emitter {
   }
 }
 
-export function setupSync(roomId) {
+export function setupSync(roomId: string): SyncManager {
   return new SyncManager(roomId);
 }
 

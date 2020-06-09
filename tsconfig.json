@@ -9,10 +9,10 @@
         "allowJs": true,             // allow a partial TypeScript and JavaScript codebase
         "allowSyntheticDefaultImports": true,
         "moduleResolution": "node",
-        "baseUrl": "./src"
+        "baseUrl": "src",
     },
     "include": [
-        "./src/",
-        "./src/lib/global/*"
+        "src/",
+        "src/lib/global/"
     ]
 }

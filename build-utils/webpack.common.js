@@ -8,7 +8,7 @@ const APP_DIR = path.resolve(__dirname, '..', './src');
 const NODE_MODULES = path.resolve(__dirname, '..', './node_modules');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/index.tsx',
   module: {
     rules: [
       {
@@ -61,16 +61,20 @@ module.exports = {
   devtool: 'source-map',
   resolve: {
     extensions: ['*', '.ts', '.tsx', '.js', '.jsx'],
+    modules: [
+      path.resolve(__dirname, '..', 'src'),
+      path.resolve(__dirname, '..', 'node_modules'),
+    ],
     alias: {
-      features: path.resolve(__dirname, '..', 'src', 'features'),
-      components: path.resolve(__dirname, '..', 'src', 'components'),
-      themes: path.resolve(__dirname, '..', 'src', 'themes'),
-      lib: path.resolve(__dirname, '..', 'src', 'lib'),
-      pages: path.resolve(__dirname, '..', 'src', 'pages'),
-      api: path.resolve(__dirname, '..', 'src', 'api'),
-      constants: path.resolve(__dirname, '..', 'src', 'constants'),
-      assets: path.resolve(__dirname, '..', 'src', 'assets'),
-      '@': path.resolve(__dirname, '..', 'src'),
+      // features: path.resolve(__dirname, '..', 'src', 'features'),
+      // components: path.resolve(__dirname, '..', 'src', 'components'),
+      // themes: path.resolve(__dirname, '..', 'src', 'themes'),
+      // lib: path.resolve(__dirname, '..', 'src', 'lib'),
+      // pages: path.resolve(__dirname, '..', 'src', 'pages'),
+      // api: path.resolve(__dirname, '..', 'src', 'api'),
+      // constants: path.resolve(__dirname, '..', 'src', 'constants'),
+      // assets: path.resolve(__dirname, '..', 'src', 'assets'),
+      // '@': path.resolve(__dirname, '..', 'src'),
     },
   },
   plugins: [
