@@ -40,28 +40,28 @@ function Terminal({
 
   // Terminal helpers
 
-  const clear = () => {
+  function clear(): void {
     // https://github.com/xtermjs/xterm.js/issues/950
     // When run initially at mount stage, xterm.clear() doesn't work since all the
     // content could still be in the write buffer and not rendered. xterm.reset()
     // doesn't seem to work either.
     xterm.write('\x1b[H\x1b[2J');
-  };
+  }
 
-  const writeEntry = log => {
+  function writeEntry(log: any): void {
     const lines = logRenderer.render(log);
     lines.forEach(line => {
       xterm.writeln(line);
     });
-  };
+  }
 
-  const writeLogs = (update = false) => {
+  function writeLogs(update: boolean = false): void {
     if (!update) clear();
     logs.forEach(log => {
       // TODO: this check is inefficient. Maintain a hashmap instead.
       if (!update || prevLogs.indexOf(log) === -1) writeEntry(log);
     });
-  };
+  }
 
   useEffect(() => {
     window.addEventListener('resize', () => addons.fitAddon.fit());
