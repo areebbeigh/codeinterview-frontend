@@ -1,8 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
-const editorDropdown = ({ defaultItem, items, handler }) => {
+interface Props {
+  defaultItem: string;
+  items: string[];
+  handler: (e: React.MouseEvent, item: string) => void;
+}
+
+function editorDropdown({
+  defaultItem,
+  items,
+  handler,
+}: Props): React.ReactElement {
   return (
     <DropdownButton
       alignRight
@@ -12,12 +21,12 @@ const editorDropdown = ({ defaultItem, items, handler }) => {
       size="sm"
       variant="dark"
     >
-      {items.map(item => {
+      {items.map((item: string) => {
         return (
           <Dropdown.Item
             as="button"
             key={item}
-            onClick={e => handler(e, item)}
+            onClick={(e: React.MouseEvent) => handler(e, item)}
           >
             {item}
           </Dropdown.Item>
@@ -25,12 +34,6 @@ const editorDropdown = ({ defaultItem, items, handler }) => {
       })}
     </DropdownButton>
   );
-};
-
-editorDropdown.propTypes = {
-  defaultItem: PropTypes.string.isRequired,
-  items: PropTypes.arrayOf(PropTypes.string).isRequired,
-  handler: PropTypes.func.isRequired,
-};
+}
 
 export default editorDropdown;

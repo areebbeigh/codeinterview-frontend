@@ -1,19 +1,34 @@
 {
-  "parser": "babel-eslint",
-  "parserOptions": {
-    "sourceType": "module"
-  },
   "env": {
-    "browser": true,
-    "es6": true,
-    "node": true
+      "browser": true,
+      "es6": true,
+      "node": true
   },
-  "extends": ["airbnb", "prettier"],
-  "plugins": ["prettier"],
+  "extends": [
+      "airbnb",
+      "prettier",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:prettier/recommended"
+  ],
+  "globals": {
+      "Atomics": "readonly",
+      "SharedArrayBuffer": "readonly"
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+      "sourceType": "module"
+  },
+  "plugins": [
+      "react",
+      "@typescript-eslint",
+      "prettier"
+  ],
   "rules": {
     "prettier/prettier": ["error"],
     "import/no-extraneous-dependencies": 0,
-    "react/jsx-filename-extension": 0
+    "react/jsx-filename-extension": 0,
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error"
   },
   "settings": {
     "import/resolver": {

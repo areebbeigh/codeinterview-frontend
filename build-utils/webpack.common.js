@@ -12,9 +12,15 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(config\.js|js|jsx)$/,
+        test: /\.(config\.js|(t|j)s|(t|j)sx)$/,
         exclude: /node_modules/,
-        use: ['babel-loader'],
+        use: ['ts-loader'],
+      },
+      {
+        enforce: 'pre',
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'source-map-loader',
       },
       {
         test: /\.(woff|woff2)$/,
@@ -52,8 +58,9 @@ module.exports = {
       },
     ],
   },
+  devtool: 'source-map',
   resolve: {
-    extensions: ['*', '.js', '.jsx'],
+    extensions: ['*', '.ts', '.tsx', '.js', '.jsx'],
     alias: {
       features: path.resolve(__dirname, '..', 'src', 'features'),
       components: path.resolve(__dirname, '..', 'src', 'components'),
