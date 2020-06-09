@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useRef } from 'react';
 import { Row } from 'react-bootstrap';
 import { Terminal as Xterm } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
@@ -9,25 +8,36 @@ import LogRenderer from './log-renderer';
 import 'xterm/css/xterm.css';
 import './terminal.css';
 
-const xtermRef = React.createRef();
-const inputRef = React.createRef();
-const logRenderer = new LogRenderer({
+const logRenderer: LogRenderer = new LogRenderer({
   showTimestamps: false,
+  profiles: [],
 });
 const addons = {
   fitAddon: new FitAddon(),
 };
-let xterm = null;
-let prevLogs = [];
+let xterm: Xterm;
+let prevLogs: any[] = [];
 
-const Terminal = ({
+interface Props {
+  logs: any[];
+  profiles: Profile[];
+  options: {};
+  onInput: (data: string) => void;
+  className: string;
+  name: string;
+}
+
+function Terminal({
   logs,
   profiles,
   options,
   onInput,
   className,
   name,
-}) => {
+}: Props): React.ReactElement {
+  const xtermRef: React.RefObject<HTMLDivElement> = useRef(null);
+  const inputRef: React.RefObject<HTMLInputElement> = useRef(null);
+
   // Terminal helpers
 
   const clear = () => {
@@ -67,17 +77,19 @@ const Terminal = ({
       ...options,
     });
     xterm.loadAddon(addons.fitAddon);
-    xterm.open(xtermRef.current);
-    xterm.inputBuffer = [];
+    if (xtermRef.current) xterm.open(xtermRef.current);
     addons.fitAddon.fit();
 
     // Accept user input (chat)
-    inputRef.current.addEventListener('keydown', e => {
-      if (e.keyCode === 13) {
-        if (onInput) onInput(inputRef.current.value);
-        inputRef.current.value = '';
-      }
-    });
+    if (inputRef && inputRef.current) {
+      inputRef.current.addEventListener('keydown', e => {
+        if (e.keyCode === 13) {
+          if (onInput) onInput(inputRef?.current?.value || '');
+          if (inputRef && inputRef.current)
+            inputRef.current.value = '';
+        }
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -103,27 +115,6 @@ const Terminal = ({
       </div>
     </div>
   );
-};
-
-Terminal.defaultProps = {
-  profiles: [],
-  options: {},
-  onInput: () => {},
-  className: '',
-  name: 'Log Terminal',
-};
-Terminal.propTypes = {
-  profiles: PropTypes.arrayOf(
-    PropTypes.shape({
-      username: PropTypes.string,
-      color: PropTypes.string,
-    })
-  ),
-  options: PropTypes.shape({}),
-  onInput: PropTypes.func,
-  logs: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  className: PropTypes.string,
-  name: PropTypes.string,
-};
+}
 
 export default Terminal;
