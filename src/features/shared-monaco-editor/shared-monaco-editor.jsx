@@ -56,7 +56,9 @@ class SharedMonacoEditor extends React.Component {
       })
       .catch(err => {
         console.error(err);
-        toast.error(`Could not load server language data. ${err.message}`);
+        toast.error(
+          `Could not load server language data. ${err.message}`
+        );
       })
       .finally(() => {
         const {
@@ -64,10 +66,12 @@ class SharedMonacoEditor extends React.Component {
           sharedEditorDidMount,
           loadTemplate,
         } = this.props;
-        this.setState({
-          language,
-          loadTemplate,
-        });
+        if (this.state.language === 'none') {
+          this.setState({
+            language,
+            loadTemplate,
+          });
+        }
         sharedEditorDidMount(this);
       });
   }
@@ -112,10 +116,7 @@ class SharedMonacoEditor extends React.Component {
     // create editor tabs with y-bindings
     const yCode = doc.getText('code');
     const yInput = doc.getText('input');
-    this.data.code.model = monaco.editor.createModel(
-      'hello',
-      language
-    );
+    this.data.code.model = monaco.editor.createModel('code');
     this.data.input.model = monaco.editor.createModel('input');
     this.data.code.binding = new MonacoBinding(
       yCode,
@@ -137,6 +138,7 @@ class SharedMonacoEditor extends React.Component {
       // eslint-disable-next-line no-shadow
       const { language } = this.state;
       const newLang = ySharedState.get('editor-language');
+      console.log('here', newLang);
       if (language !== newLang) {
         this.setState({
           language: newLang,

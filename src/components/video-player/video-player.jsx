@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/media-has-caption */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -14,71 +14,51 @@ function connectVideoToStream(video, stream) {
   if (stream) video.srcObject = stream;
 }
 
-class Player extends React.Component {
-  constructor(props) {
-    super(props);
-    this.toggleAudio = this.toggleAudio.bind(this);
-    this.videoRef = React.createRef();
-    this.state = {
-      muted: false,
-      video: true,
-    };
-  }
+const Player = ({
+  stream,
+  width,
+  className,
+  onClick,
+  showControls,
+  name,
+}) => {
+  const [isMuted, setMuted] = useState(false);
+  const videoRef = React.createRef();
 
-  componentDidMount() {
-    const { stream } = this.props;
-    connectVideoToStream(this.videoRef.current, stream);
-  }
+  useEffect(() => {
+    connectVideoToStream(videoRef.current, stream);
+  }, [stream]);
 
-  componentDidUpdate(prevProps) {
-    const { stream } = this.props;
-    if (stream !== prevProps.stream) {
-      connectVideoToStream(this.videoRef.current, stream);
-    }
-  }
+  const toggleAudio = () => {
+    videoRef.current.muted = !isMuted;
+    setMuted(!isMuted);
+  };
 
-  toggleAudio() {
-    const { muted } = this.state;
-    this.videoRef.current.muted = !muted;
-    this.setState({ muted: !muted });
+  if (stream) {
+    return (
+      <div className="video-container">
+        <video
+          autoPlay
+          className={className}
+          onClick={onClick}
+          style={{ width }}
+          ref={videoRef}
+        />
+        {showControls && (
+          <div className="controls p-1 pr-2">
+            <FontAwesomeIcon
+              icon={isMuted ? faMicrophoneSlash : faMicrophone}
+              onClick={toggleAudio}
+              className="icon"
+            />
+            <span className="name">{name}</span>
+          </div>
+        )}
+      </div>
+    );
   }
-
-  render() {
-    const {
-      stream,
-      width,
-      className,
-      onClick,
-      showControls,
-      name,
-    } = this.props;
-    const { muted, video } = this.state;
-    if (stream) {
-      return (
-        <div className="video-container">
-          <video
-            autoPlay
-            className={className}
-            onClick={onClick}
-            style={{ width }}
-            ref={this.videoRef}
-          />
-          {showControls && (
-            <div className="controls p-1 pr-2">
-              <FontAwesomeIcon
-                icon={muted ? faMicrophoneSlash : faMicrophone}
-                onClick={this.toggleAudio}
-                className="icon"
-              />
-              <span className="name">{name}</span>
-            </div>
-          )}
-        </div>
-      );
-    }
-    return <div className="video-placeholder" />;
-  }
-}
+  return <div className="video-placeholder" />;
+};
 
 Player.defaultProps = {
   stream: null,

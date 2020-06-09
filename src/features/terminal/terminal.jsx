@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Row } from 'react-bootstrap';
 import { Terminal as Xterm } from 'xterm';
@@ -9,27 +9,53 @@ import LogRenderer from './log-renderer';
 import 'xterm/css/xterm.css';
 import './terminal.css';
 
-class Terminal extends React.Component {
-  constructor(props) {
-    super(props);
-    const { profiles } = this.props;
-    this.$xtermRef = React.createRef();
-    this.$inputRef = React.createRef();
-    this.logRenderer = new LogRenderer({
-      showTimestamps: false,
-      profiles,
-    });
-    this.addons = {
-      fitAddon: new FitAddon(),
-    };
-  }
+const xtermRef = React.createRef();
+const inputRef = React.createRef();
+const logRenderer = new LogRenderer({
+  showTimestamps: false,
+});
+const addons = {
+  fitAddon: new FitAddon(),
+};
+let xterm = null;
+let prevLogs = [];
 
-  componentDidMount() {
-    const { options } = this.props;
-    window.addEventListener('resize', () =>
-      this.addons.fitAddon.fit()
-    );
-    this.xterm = new Xterm({
+const Terminal = ({
+  logs,
+  profiles,
+  options,
+  onInput,
+  className,
+  name,
+}) => {
+  // Terminal helpers
+
+  const clear = () => {
+    // https://github.com/xtermjs/xterm.js/issues/950
+    // When run initially at mount stage, xterm.clear() doesn't work since all the
+    // content could still be in the write buffer and not rendered. xterm.reset()
+    // doesn't seem to work either.
+    xterm.write('\x1b[H\x1b[2J');
+  };
+
+  const writeEntry = log => {
+    const lines = logRenderer.render(log);
+    lines.forEach(line => {
+      xterm.writeln(line);
+    });
+  };
+
+  const writeLogs = (update = false) => {
+    if (!update) clear();
+    logs.forEach(log => {
+      // TODO: this check is inefficient. Maintain a hashmap instead.
+      if (!update || prevLogs.indexOf(log) === -1) writeEntry(log);
+    });
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', () => addons.fitAddon.fit());
+    xterm = new Xterm({
       convertEol: true,
       fontFamily: `'Fira Mono', monospace`,
       fontSize: 15,
@@ -37,91 +63,47 @@ class Terminal extends React.Component {
       lineHeight: 1,
       theme: {
         background: '#151515',
-        // foreground: '#6c757d',
       },
       ...options,
     });
-    this.xterm.loadAddon(this.addons.fitAddon);
-    this.xterm.open(this.$xtermRef.current);
-    this.xterm.inputBuffer = [];
-    this.addons.fitAddon.fit();
+    xterm.loadAddon(addons.fitAddon);
+    xterm.open(xtermRef.current);
+    xterm.inputBuffer = [];
+    addons.fitAddon.fit();
 
     // Accept user input (chat)
-    this.$inputRef.current.addEventListener('keydown', e => {
+    inputRef.current.addEventListener('keydown', e => {
       if (e.keyCode === 13) {
-        const { onInput } = this.props;
-        if (onInput) onInput(this.$inputRef.current.value);
-        this.$inputRef.current.value = '';
+        if (onInput) onInput(inputRef.current.value);
+        inputRef.current.value = '';
       }
     });
+  }, []);
 
-    this.writeLogs();
-  }
+  useEffect(() => {
+    logRenderer.profiles = profiles;
+    writeLogs(true);
+    prevLogs = logs;
+  }, [logs, profiles]);
 
-  componentDidUpdate(prevProps) {
-    const { logs, profiles } = this.props;
-    if (logs !== prevProps.logs || profiles !== prevProps.profiles) {
-      this.logRenderer.profiles = profiles;
-      this.writeLogs(prevProps.logs, true);
-    }
-  }
-
-  // Terminal helpers
-
-  clear() {
-    // https://github.com/xtermjs/xterm.js/issues/950
-    // When run initially at mount stage, xterm.clear() doesn't work since all the
-    // content could still be in the write buffer and not rendered. xterm.reset()
-    // doesn't seem to work either.
-    this.xterm.write('\x1b[H\x1b[2J');
-  }
-
-  clearLastLine() {
-    // https://stackoverflow.com/questions/56828930/how-to-remove-the-last-line-in-xterm-js
-    this.xterm.write('\x1b[2K\r');
-  }
-
-  prompt() {
-    this.xterm.write('$ ');
-  }
-
-  writeLogs(prevLogs = null, update = false) {
-    const { logs } = this.props;
-    if (!update) this.clear();
-    logs.forEach(log => {
-      if (!update || prevLogs.indexOf(log) === -1)
-        this.writeEntry(log);
-    });
-  }
-
-  writeEntry(log) {
-    const lines = this.logRenderer.render(log);
-    lines.forEach(line => {
-      this.xterm.writeln(line);
-    });
-  }
-
-  render() {
-    const { className, name } = this.props;
-    return (
-      <div className={className}>
-        <div className="terminal-container align-items-center">
-          <Row className="terminal-header align-items-center">
-            <div className="tab-area">
-              <span className="tab active">{name}</span>
-            </div>
-          </Row>
-          <div className="xterm-container" ref={this.$xtermRef} />
-          <input
-            ref={this.$inputRef}
-            className="terminal-input"
-            placeholder="Type something..."
-          />
-        </div>
+  return (
+    <div className={className}>
+      <div className="terminal-container align-items-center">
+        <Row className="terminal-header align-items-center">
+          <div className="tab-area">
+            <span className="tab active">{name}</span>
+          </div>
+        </Row>
+        <div className="xterm-container" ref={xtermRef} />
+        <input
+          ref={inputRef}
+          className="terminal-input"
+          placeholder="Type something..."
+        />
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 Terminal.defaultProps = {
   profiles: [],
