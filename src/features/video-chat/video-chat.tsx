@@ -23,11 +23,11 @@ function getName(peerId: string): string {
 
 function VideoChat(): React.ReactElement {
   const [myPeerId, setMyPeerId] = useState<string>(
-    window.sync?.peerId || null
+    window.sync?.peerId || null!
   );
   const [streams, setStreams] = useState<{
     [peerId: string]: MediaStream;
-  }>(window.sync?.streams || {});
+  }>(window.sync?.streams || null!);
   const [localStream, setLocalStream] = useState<MediaStream>(null!);
   const [focusStream, setFocusStream] = useState<MediaStream>(null!);
   const [focusId, setFocusId] = useState<string>();
@@ -39,7 +39,7 @@ function VideoChat(): React.ReactElement {
   function getMediaStream(): void {
     window.sync
       .getUserMedia()
-      .then(stream => {
+      .then((stream: MediaStream) => {
         // don't want our audio echo
         setLocalStream(new MediaStream(stream.getVideoTracks()));
       })

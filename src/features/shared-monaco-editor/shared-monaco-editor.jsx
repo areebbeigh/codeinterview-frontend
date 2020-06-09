@@ -6,12 +6,12 @@ import PropTypes from 'prop-types';
 import { Row, Col } from 'react-bootstrap';
 import MonacoEditor from 'react-monaco-editor';
 import { MonacoBinding } from 'y-monaco';
-import EditorDropdown from 'components/editor-dropdown/editor-dropdown';
 import { toast } from 'react-toastify';
 
 import LANG_CONFIG from 'constants/languages';
 import langService from 'api/http/lang-service';
 import loadingIcon from 'assets/svg/editor-loading.svg';
+import EditorDropdown from 'components/editor-dropdown/editor-dropdown';
 import setDefaultTheme from './theme-utils';
 import defaultConfig from './default-config';
 
