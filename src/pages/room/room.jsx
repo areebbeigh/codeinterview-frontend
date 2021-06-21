@@ -20,7 +20,7 @@ import Terminal from 'features/terminal/terminal';
 import roomService from 'api/http/room-service';
 import roomSocket from 'api/ws/room-socket';
 import colors from 'constants/colors';
-import { setupSync } from '@/sync-manager';
+import { setupSync } from 'sync-manager';
 
 import './room.css';
 

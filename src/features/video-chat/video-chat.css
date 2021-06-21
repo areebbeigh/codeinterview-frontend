@@ -70,6 +70,10 @@ $compressed-window-width: 250px;
       max-height: calc($compressed-window-height - $title-bar-height);
       max-width: $compressed-window-width;
     }
+    .peer-stream, .focus-stream {
+      max-height: 18vh;
+      width: auto !important;
+    }
   }
 }
 

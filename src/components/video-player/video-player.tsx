@@ -1,6 +1,5 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMicrophone,
@@ -9,29 +8,46 @@ import {
 
 import './video-player.css';
 
-function connectVideoToStream(video, stream) {
+function connectVideoToStream(
+  video: HTMLVideoElement,
+  stream: MediaStream
+) {
   // eslint-disable-next-line no-param-reassign
   if (stream) video.srcObject = stream;
 }
 
-const Player = ({
+interface Props {
+  stream: MediaStream;
+  width: any;
+  className: string;
+  onClick?: (
+    event: React.MouseEvent<HTMLVideoElement, MouseEvent>
+  ) => void;
+  showControls: Boolean;
+  name: string;
+}
+
+function Player({
   stream,
   width,
   className,
   onClick,
   showControls,
   name,
-}) => {
-  const [isMuted, setMuted] = useState(false);
-  const videoRef = React.createRef();
+}: Props): React.ReactElement {
+  const [isMuted, setMuted] = useState<Boolean>(false);
+  const videoRef: React.RefObject<HTMLVideoElement> = React.createRef();
 
   useEffect(() => {
-    connectVideoToStream(videoRef.current, stream);
+    if (videoRef.current)
+      connectVideoToStream(videoRef.current, stream);
   }, [stream]);
 
   const toggleAudio = () => {
-    videoRef.current.muted = !isMuted;
-    setMuted(!isMuted);
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setMuted(!isMuted);
+    }
   };
 
   if (stream) {
@@ -58,23 +74,6 @@ const Player = ({
     );
   }
   return <div className="video-placeholder" />;
-};
-
-Player.defaultProps = {
-  stream: null,
-  width: '100%',
-  className: '',
-  onClick: () => null,
-  showControls: false,
-  name: '',
-};
-Player.propTypes = {
-  stream: PropTypes.shape({}),
-  width: PropTypes.string,
-  className: PropTypes.string,
-  onClick: PropTypes.func,
-  showControls: PropTypes.bool,
-  name: PropTypes.string,
-};
+}
 
 export default Player;

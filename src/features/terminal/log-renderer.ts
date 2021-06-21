@@ -11,22 +11,45 @@ const ENTRY_TYPES = {
   CODE_OUTPUT: 'CO',
 };
 
-class LogRenderer {
-  constructor({ showTimestamps, profiles }) {
+interface Config {
+  showTimestamps: boolean;
+  profiles: Profile[];
+}
+
+interface ILogRenderer {
+  readonly chalk: chalk.Chalk;
+  showTimestamps: boolean;
+  profiles: Profile[];
+}
+
+class LogRenderer implements ILogRenderer {
+  chalk: chalk.Chalk;
+
+  showTimestamps: boolean;
+
+  profiles: Profile[];
+
+  constructor({ showTimestamps, profiles }: Config) {
     this.chalk = new chalk.Instance({ level: 3 });
     this.showTimestamps = showTimestamps;
     this.profiles = profiles;
   }
 
-  colorAuthor(username) {
+  colorAuthor(username: string): string {
     const profiles = this.profiles.filter(
-      profile => profile.username === username
+      (profile: Profile) => profile.username === username
     );
     if (profiles.length === 0) return this.chalk`{dim ${username}}`;
     return this.chalk`{hex('${profiles[0].color}') ${username}}`;
   }
 
-  withTimestamp({ timestamp, line }) {
+  withTimestamp({
+    timestamp,
+    line,
+  }: {
+    timestamp: number;
+    line: string;
+  }): string {
     if (this.showTimestamps) {
       const ts = this.chalk`{dim ${moment
         .unix(timestamp)
@@ -36,8 +59,18 @@ class LogRenderer {
     return line;
   }
 
-  render({ timestamp, content, type, author }) {
-    const rv = [];
+  render({
+    timestamp,
+    content,
+    type,
+    author,
+  }: {
+    timestamp: number;
+    content: any;
+    type: string;
+    author: string;
+  }): string[] {
+    const rv: string[] = [];
 
     const add = line => {
       rv.push(this.withTimestamp({ timestamp, line }));
